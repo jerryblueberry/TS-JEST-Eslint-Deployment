@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  name          String?        @db.VarChar(255) // Assuming you want to limit the length of the name
+  email         String         @unique
+  password      String?
+  registrations Registration[]
+  role          String
+  created_at    DateTime       @default(now())
+
+  //  later add the location
+  // location   String   @db.VarChar(255) // Assuming you want to store the location as a string
+}
+
+model Event {
+  id            Int            @id @default(autoincrement())
+  title         String
+  description   String
+  thumbnail     String
+  seats         Int
+  price         Float
+  registrations Registration[]
+  date          DateTime
+  created_at    DateTime       @default(now())
+}
+
+model Registration {
+  id         Int      @id @default(autoincrement())
+  eventId    Int
+  userId     Int
+  created_at DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Add foreign key contraints
+  @@index([eventId], name: "eventId")
+  @@index([userId], name: "userId")
+}
