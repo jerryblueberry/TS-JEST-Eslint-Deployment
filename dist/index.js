@@ -28,6 +28,16 @@ app.use("/files", express_1.default.static(path_1.default.join(__dirname, "../fi
 app.use("/user", userRoutes_1.default);
 app.use("/event", eventRoutes_1.default);
 app.use("/register", registerRoute_1.default);
+// check
+app.get("/", (req, res) => {
+    try {
+        res.send("Hello World");
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
 });
+// DATABASE_URL="postgresql://postgres:sajank1818@localhost:4000/host_ts_migrate?schema=public"

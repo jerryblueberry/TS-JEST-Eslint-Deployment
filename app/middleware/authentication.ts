@@ -12,7 +12,7 @@ interface User {
   email: string;
   password: string | null;
   role: string;
-  created_at: Date;
+  createdAt: Date;
 }
 
 interface RequestWithUser extends Request {

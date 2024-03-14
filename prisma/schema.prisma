@@ -7,17 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            Int            @id @default(autoincrement())
-  name          String?        @db.VarChar(255) // Assuming you want to limit the length of the name
-  email         String         @unique
-  password      String?
-  registrations Registration[]
-  role          String
-  created_at    DateTime       @default(now())
+// model User {
+//   id            Int            @id @default(autoincrement())
+//   name          String?        @db.VarChar(255) // Assuming you want to limit the length of the name
+//   email         String         @unique
+//   password      String?
+//   registrations Registration[]
+//   role          String
+//   created_at    DateTime       @default(now())
 
-  //  later add the location
-  // location   String   @db.VarChar(255) // Assuming you want to store the location as a string
+//   //  later add the location
+//   // location   String   @db.VarChar(255) // Assuming you want to store the location as a string
+// }
+
+// Define model for User table in public schema
+model User {
+  id           Int            @id @default(autoincrement())
+  name         String
+  email        String         @unique
+  password     String
+  role         String
+  createdAt    DateTime       @default(now())
+  Registration Registration[]
 }
 
 model Event {
