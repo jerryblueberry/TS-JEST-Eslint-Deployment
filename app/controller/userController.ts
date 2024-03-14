@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../DB/db.config";
 import bcrypt from "bcrypt";
 import { generateTokenAndSetCookie } from "../utils/generateTokenandSetCookie.js";
+import { logger } from "../logger";
 const saltRounds = 10;
 
 interface UserCreateInput {
@@ -69,6 +70,7 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     generateTokenAndSetCookie(user.id, user.name ?? "", user.email, user.role, res);
+    logger.info("Signup Successfull");
 
     res.status(200).json({ message: "Login successful", user });
   } catch (error) {

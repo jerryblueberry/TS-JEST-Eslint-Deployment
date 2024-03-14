@@ -17,6 +17,7 @@ const db_config_1 = __importDefault(require("../DB/db.config"));
 const node_cron_1 = __importDefault(require("node-cron"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const mjml_1 = __importDefault(require("mjml"));
+const logger_1 = require("../logger");
 require("dotenv/config");
 const createEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -171,6 +172,7 @@ const sendTodayEvents = () => __awaiter(void 0, void 0, void 0, function* () {
             html, // Use the converted HTML content
         };
         yield transporter.sendMail(mailOptions);
+        logger_1.logger.info("Sucessfully sent todays event list to the admin");
         console.log("Email sent successfully");
     }
     catch (error) {

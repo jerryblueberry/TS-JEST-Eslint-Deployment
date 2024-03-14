@@ -3,6 +3,7 @@ import prisma from "../DB/db.config";
 import cron from "node-cron";
 import nodemailer from "nodemailer";
 import mjml2html from "mjml";
+import { logger } from "../logger";
 import "dotenv/config";
 
 //  create event
@@ -194,6 +195,7 @@ export const sendTodayEvents = async () => {
     };
 
     await transporter.sendMail(mailOptions);
+    logger.info("Sucessfully sent todays event list to the admin");
     console.log("Email sent successfully");
   } catch (error) {
     console.error("Error sending email:", error);

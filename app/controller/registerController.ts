@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../DB/db.config";
 import mjml2html from "mjml";
 import nodemailer from "nodemailer";
-
+import { logger } from "../logger";
 // interface RegistrationInput {
 //   eventId: number;
 // }
@@ -77,6 +77,7 @@ export const registerEvent = async (req: RequestWithUser, res: Response) => {
                 <p>Event Details:</p>
                 <p>Title: ${event.title}</p>
                 <p>Description: ${event.description}</p>
+                
               </mj-text>
             </mj-column>
           </mj-section>
@@ -104,6 +105,7 @@ export const registerEvent = async (req: RequestWithUser, res: Response) => {
 
     await transporter.sendMail(mailOptions);
     console.log(registration);
+    logger.info(`Registered for event successfully by user ${userEmail} for the event ${eventId} `);
 
     return res.status(200).json({ message: "Registration successful" });
   } catch (error) {

@@ -16,6 +16,7 @@ exports.loginUser = exports.createUser = void 0;
 const db_config_1 = __importDefault(require("../DB/db.config"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const generateTokenandSetCookie_js_1 = require("../utils/generateTokenandSetCookie.js");
+const logger_1 = require("../logger");
 const saltRounds = 10;
 // create user (SignUp)
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -67,6 +68,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(403).json({ message: "Password didn't match" });
         }
         (0, generateTokenandSetCookie_js_1.generateTokenAndSetCookie)(user.id, (_a = user.name) !== null && _a !== void 0 ? _a : "", user.email, user.role, res);
+        logger_1.logger.info("Signup Successfull");
         res.status(200).json({ message: "Login successful", user });
     }
     catch (error) {

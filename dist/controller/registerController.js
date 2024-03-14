@@ -16,6 +16,7 @@ exports.registerEvent = void 0;
 const db_config_1 = __importDefault(require("../DB/db.config"));
 const mjml_1 = __importDefault(require("mjml"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const logger_1 = require("../logger");
 const registerEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
@@ -68,6 +69,7 @@ const registerEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 <p>Event Details:</p>
                 <p>Title: ${event.title}</p>
                 <p>Description: ${event.description}</p>
+                
               </mj-text>
             </mj-column>
           </mj-section>
@@ -91,6 +93,7 @@ const registerEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         };
         yield transporter.sendMail(mailOptions);
         console.log(registration);
+        logger_1.logger.info(`Registered for event successfully by user ${userEmail} for the event ${eventId} `);
         return res.status(200).json({ message: "Registration successful" });
     }
     catch (error) {
