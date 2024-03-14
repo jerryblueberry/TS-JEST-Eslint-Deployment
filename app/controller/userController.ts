@@ -70,7 +70,7 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     generateTokenAndSetCookie(user.id, user.name ?? "", user.email, user.role, res);
-    logger.info("Signup Successfull");
+    logger.info(`Login Successfull for user ${user.name}`);
 
     res.status(200).json({ message: "Login successful", user });
   } catch (error) {

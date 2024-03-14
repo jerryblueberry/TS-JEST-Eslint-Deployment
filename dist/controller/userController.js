@@ -68,7 +68,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(403).json({ message: "Password didn't match" });
         }
         (0, generateTokenandSetCookie_js_1.generateTokenAndSetCookie)(user.id, (_a = user.name) !== null && _a !== void 0 ? _a : "", user.email, user.role, res);
-        logger_1.logger.info("Signup Successfull");
+        logger_1.logger.info(`Login Successfull for user ${user.name}`);
         res.status(200).json({ message: "Login successful", user });
     }
     catch (error) {
