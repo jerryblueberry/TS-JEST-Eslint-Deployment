@@ -24,7 +24,7 @@ app.use(
   }),
 );
 
-app.use("/files", express.static(path.join(__dirname, "files")));
+app.use("/files", express.static(path.join(__dirname, "../files")));
 
 // routes
 app.use("/user", User);

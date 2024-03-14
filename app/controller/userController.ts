@@ -68,7 +68,7 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Password didn't match" });
     }
 
-    generateTokenAndSetCookie(user.id, user.name ?? "", user.role, res);
+    generateTokenAndSetCookie(user.id, user.name ?? "", user.email, user.role, res);
 
     res.status(200).json({ message: "Login successful", user });
   } catch (error) {

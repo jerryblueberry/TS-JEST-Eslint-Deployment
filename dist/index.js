@@ -23,7 +23,7 @@ app.use((0, express_session_1.default)({
     saveUninitialized: true,
     cookie: { secure: false }, // Set secure to true if using HTTPS
 }));
-app.use("/files", express_1.default.static(path_1.default.join(__dirname, "files")));
+app.use("/files", express_1.default.static(path_1.default.join(__dirname, "../files")));
 // routes
 app.use("/user", userRoutes_1.default);
 app.use("/event", eventRoutes_1.default);

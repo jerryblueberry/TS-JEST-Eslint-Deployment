@@ -18,31 +18,10 @@ const node_cron_1 = __importDefault(require("node-cron"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const mjml_1 = __importDefault(require("mjml"));
 require("dotenv/config");
-// export const createEvent = async (req: Request<EventCreateInput>, res: Response) => {
-// export const createEvent: RequestHandler<EventCreateInput> = async (req, res) => {
-//   try {
-//     const { title, description, thumbnail, seats, price, date } = req.body as EventCreateInput;
-//     if (!title || !description || !seats || !price) {
-//       return res.status(400).json({ message: "All fields are required" });
-//     }
-//     const newEvent = await prisma.event.create({
-//       data: {
-//         title,
-//         description,
-//         thumbnail,
-//         seats,
-//         price,
-//         date,
-//       },
-//     });
-//     return res.status(200).json({ newEvent, message: "Event Created Successfully" });
-//   } catch (error) {
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
 const createEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { title, description, seats, price, date } = req.body;
+        // const thumbnail = req.file ? req.file.path : "";
         const thumbnail = req.file ? req.file.path : "";
         if (!title || !description || !seats || !price) {
             return res.status(400).json({ message: "All fields are required" });
@@ -52,14 +31,15 @@ const createEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 title,
                 description,
                 thumbnail: thumbnail,
-                seats,
-                price,
-                date,
+                seats: parseInt(seats),
+                price: parseFloat(price),
+                date: new Date(date),
             },
         });
         return res.status(200).json({ newEvent, message: "Event Created Successfully" });
     }
     catch (error) {
+        console.log("Error creating event", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });

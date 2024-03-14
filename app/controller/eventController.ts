@@ -18,35 +18,23 @@ interface EventCreateInput {
 interface RequestWithUser extends Request {
   user?: EventCreateInput;
 }
-// export const createEvent = async (req: Request<EventCreateInput>, res: Response) => {
-// export const createEvent: RequestHandler<EventCreateInput> = async (req, res) => {
-//   try {
-//     const { title, description, thumbnail, seats, price, date } = req.body as EventCreateInput;
 
-//     if (!title || !description || !seats || !price) {
-//       return res.status(400).json({ message: "All fields are required" });
-//     }
-//     const newEvent = await prisma.event.create({
-//       data: {
-//         title,
-//         description,
-//         thumbnail,
-//         seats,
-//         price,
-//         date,
-//       },
-//     });
+//  my try
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
 
-//     return res.status(200).json({ newEvent, message: "Event Created Successfully" });
-//   } catch (error) {
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
-
+interface RequestUserCokie extends Request {
+  user?: User;
+}
 export const createEvent = async (req: RequestWithUser, res: Response) => {
   try {
     const { title, description, seats, price, date } = req.body;
 
+    // const thumbnail = req.file ? req.file.path : "";
     const thumbnail = req.file ? req.file.path : "";
     if (!title || !description || !seats || !price) {
       return res.status(400).json({ message: "All fields are required" });
@@ -56,26 +44,28 @@ export const createEvent = async (req: RequestWithUser, res: Response) => {
         title,
         description,
         thumbnail: thumbnail,
-        seats,
-        price,
-        date,
+        seats: parseInt(seats),
+        price: parseFloat(price),
+        date: new Date(date),
       },
     });
 
     return res.status(200).json({ newEvent, message: "Event Created Successfully" });
   } catch (error) {
+    console.log("Error creating event", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 //  get all events
-export const getAllEvents = async (req: Request, res: Response) => {
+export const getAllEvents = async (req: RequestUserCokie, res: Response) => {
   try {
     const events = await prisma.event.findMany({
       orderBy: {
         created_at: "desc",
       },
     });
+
     res.status(200).json({ events });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });

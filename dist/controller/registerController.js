@@ -17,8 +17,14 @@ const db_config_1 = __importDefault(require("../DB/db.config"));
 const mjml_1 = __importDefault(require("mjml"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const registerEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     try {
-        const { eventId, userId, userEmail } = req.body;
+        const { eventId } = req.body;
+        const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+        const userEmail = (_b = req.user) === null || _b === void 0 ? void 0 : _b.email;
+        if (!userId || !userEmail) {
+            return res.status(401).json({ message: "User information not provided" });
+        }
         // Check if the event exists
         const event = yield db_config_1.default.event.findUnique({
             where: {
@@ -62,7 +68,6 @@ const registerEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 <p>Event Details:</p>
                 <p>Title: ${event.title}</p>
                 <p>Description: ${event.description}</p>
-                
               </mj-text>
             </mj-column>
           </mj-section>
@@ -72,8 +77,6 @@ const registerEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const { html } = (0, mjml_1.default)(mjmlTemplate);
         // Send the email using Nodemailer
         const transporter = nodemailer_1.default.createTransport({
-            // Configure your email service provider here
-            // For example, for Gmail:
             service: "gmail",
             auth: {
                 user: "jerrytechs83@gmail.com",
@@ -82,8 +85,8 @@ const registerEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
         const mailOptions = {
             from: "jerrytechs83@gmail.com",
-            to: `${userEmail}`, // Change this to the user's email address
-            subject: "Event Registration Successfull",
+            to: userEmail,
+            subject: "Event Registration Successful",
             html,
         };
         yield transporter.sendMail(mailOptions);

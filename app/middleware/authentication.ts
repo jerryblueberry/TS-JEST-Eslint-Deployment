@@ -29,6 +29,8 @@ export const verifyAuth = async (req: RequestWithUser, res: Response, next: Next
   try {
     const decoded = jwt.verify(token, "MXIUuw6u5Ty0Ecih3XCjZ1+0575N2OTu0x9gsOl6pBc=") as DecodedToken;
 
+    console.log("Decoded Token:", decoded); // Log decoded token object
+
     if (!decoded) {
       return res.status(401).json({ error: "Unauthorized - Invalid token" });
     }
@@ -41,7 +43,9 @@ export const verifyAuth = async (req: RequestWithUser, res: Response, next: Next
       return res.status(404).json({ error: "User not found" });
     }
 
+    // Include user object in the request object
     req.user = user;
+
     next();
   } catch (error) {
     console.error("Token verification error:", error);

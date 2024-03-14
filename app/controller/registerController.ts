@@ -3,15 +3,31 @@ import prisma from "../DB/db.config";
 import mjml2html from "mjml";
 import nodemailer from "nodemailer";
 
-interface RegistrationInput {
+// interface RegistrationInput {
+//   eventId: number;
+// }
+
+interface User {
   eventId: number;
-  userId: number;
-  userEmail: string;
+  id: number;
+  name: string;
+  email: string;
+  role: string;
 }
 
-export const registerEvent = async (req: Request<RegistrationInput>, res: Response) => {
+interface RequestWithUser extends Request {
+  user?: User;
+}
+
+export const registerEvent = async (req: RequestWithUser, res: Response) => {
   try {
-    const { eventId, userId, userEmail } = req.body;
+    const { eventId } = req.body;
+    const userId = req.user?.id;
+    const userEmail = req.user?.email;
+
+    if (!userId || !userEmail) {
+      return res.status(401).json({ message: "User information not provided" });
+    }
 
     // Check if the event exists
     const event = await prisma.event.findUnique({
@@ -61,7 +77,6 @@ export const registerEvent = async (req: Request<RegistrationInput>, res: Respon
                 <p>Event Details:</p>
                 <p>Title: ${event.title}</p>
                 <p>Description: ${event.description}</p>
-                
               </mj-text>
             </mj-column>
           </mj-section>
@@ -73,8 +88,6 @@ export const registerEvent = async (req: Request<RegistrationInput>, res: Respon
 
     // Send the email using Nodemailer
     const transporter = nodemailer.createTransport({
-      // Configure your email service provider here
-      // For example, for Gmail:
       service: "gmail",
       auth: {
         user: "jerrytechs83@gmail.com",
@@ -84,8 +97,8 @@ export const registerEvent = async (req: Request<RegistrationInput>, res: Respon
 
     const mailOptions = {
       from: "jerrytechs83@gmail.com",
-      to: `${userEmail}`, // Change this to the user's email address
-      subject: "Event Registration Successfull",
+      to: userEmail,
+      subject: "Event Registration Successful",
       html,
     };
 

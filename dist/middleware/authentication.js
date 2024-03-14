@@ -22,6 +22,7 @@ const verifyAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
     try {
         const decoded = jsonwebtoken_1.default.verify(token, "MXIUuw6u5Ty0Ecih3XCjZ1+0575N2OTu0x9gsOl6pBc=");
+        console.log("Decoded Token:", decoded); // Log decoded token object
         if (!decoded) {
             return res.status(401).json({ error: "Unauthorized - Invalid token" });
         }
@@ -31,6 +32,7 @@ const verifyAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
+        // Include user object in the request object
         req.user = user;
         next();
     }

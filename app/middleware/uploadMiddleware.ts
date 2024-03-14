@@ -1,22 +1,22 @@
 import multer, { StorageEngine } from "multer";
-import { Request } from "express";
+// import { Request } from "express";
 
 // Define types for the request and file
-interface MulterRequest extends Request {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  file: any; // Adjust the type according to your needs
-}
+// interface MulterRequest extends Request {
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   file: any; // Adjust the type according to your needs
+// }
 
-interface File {
-  fieldname: string;
-  originalname: string;
-  encoding: string;
-  mimetype: string;
-  destination: string;
-  filename: string;
-  path: string;
-  size: number;
-}
+// interface File {
+//   fieldname: string;
+//   originalname: string;
+//   encoding: string;
+//   mimetype: string;
+//   destination: string;
+//   filename: string;
+//   path: string;
+//   size: number;
+// }
 
 // Define the storage configuration
 const storage: StorageEngine = multer.diskStorage({
@@ -30,15 +30,15 @@ const storage: StorageEngine = multer.diskStorage({
 });
 
 // Define the file filter function
-const fileFilter = (req: MulterRequest, file: File, cb: multer.FileFilterCallback) => {
-  // check if the file type is allowed
-  const allowedMimeTypes = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
-  if (allowedMimeTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Invalid file Type. Allowed types: JPEG, JPG, PNG, GIF"));
-  }
-};
+// const fileFilter = (req: MulterRequest, file: File, cb: multer.FileFilterCallback) => {
+//   // check if the file type is allowed
+//   const allowedMimeTypes = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
+//   if (allowedMimeTypes.includes(file.mimetype)) {
+//     cb(null, true);
+//   } else {
+//     cb(new Error("Invalid file Type. Allowed types: JPEG, JPG, PNG, GIF"));
+//   }
+// };
 
 // Define limits for file size
 const limits = {
@@ -48,7 +48,7 @@ const limits = {
 // Configure Multer with the defined options
 const singleUpload = multer({
   storage: storage,
-  fileFilter: fileFilter,
+  // fileFilter: fileFilter,
   limits: limits,
 }).single("thumbnail");
 
