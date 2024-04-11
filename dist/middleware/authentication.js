@@ -16,19 +16,31 @@ exports.isAdmin = exports.verifyAuth = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const db_config_1 = __importDefault(require("../DB/db.config"));
 const verifyAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.cookies.jwt;
-    if (!token) {
+    const accessToken = req.cookies.jwt;
+    const refreshToken = req.cookies.refreshToken;
+    // Check if access token or refresh token is provided
+    if (!accessToken && !refreshToken) {
         return res.status(401).json({ error: "JWT must be provided" });
     }
+    let decoded = null; // Initialize decoded to null
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, "MXIUuw6u5Ty0Ecih3XCjZ1+0575N2OTu0x9gsOl6pBc=");
-        console.log("Decoded Token:", decoded); // Log decoded token object
+        // Verify access token
+        if (accessToken) {
+            decoded = jsonwebtoken_1.default.verify(accessToken, "MXIUuw6u5Ty0Ecih3XCjZ1+0575N2OTu0x9gsOl6pBc=");
+        }
+        // Verify refresh token
+        else if (refreshToken) {
+            decoded = jsonwebtoken_1.default.verify(refreshToken, "refreshToken123");
+        }
+        // If token is invalid, return unauthorized error
         if (!decoded) {
             return res.status(401).json({ error: "Unauthorized - Invalid token" });
         }
+        // Find user based on userId from decoded token
         const user = yield db_config_1.default.user.findUnique({
             where: { id: decoded.userId },
         });
+        // If user not found, return error
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }

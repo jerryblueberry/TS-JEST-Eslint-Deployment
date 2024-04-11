@@ -45,3 +45,4 @@ app.listen(PORT, () => {
 
 // DATABASE_URL="postgresql://postgres:sajank1818@localhost:4000/host_ts_migrate?schema=public"
 // DATABASE_URL="postgresql://postgres:sajank1818@localhost:4000/host_ts_migrate?schema=public"
+export default app;

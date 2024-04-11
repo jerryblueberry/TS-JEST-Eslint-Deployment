@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../DB/db.config";
-import mjml2html from "mjml";
-import nodemailer from "nodemailer";
+
 import { logger } from "../logger";
+import { sendRegistrationEmail } from "../utils/mailer";
 // interface RegistrationInput {
 //   eventId: number;
 // }
@@ -65,45 +65,8 @@ export const registerEvent = async (req: RequestWithUser, res: Response) => {
       },
     });
 
-    // Send email with MJML template
-    const mjmlTemplate = `
-      <mjml>
-        <mj-body>
-          <mj-section>
-            <mj-column>
-              <mj-text>
-                <h1>Registration Successful</h1>
-                <p>Thank you for registering for the event "${event.title}".</p>
-                <p>Event Details:</p>
-                <p>Title: ${event.title}</p>
-                <p>Description: ${event.description}</p>
-                
-              </mj-text>
-            </mj-column>
-          </mj-section>
-        </mj-body>
-      </mjml>
-    `;
-
-    const { html } = mjml2html(mjmlTemplate);
-
-    // Send the email using Nodemailer
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "jerrytechs83@gmail.com",
-        pass: "hcmj rbft sgdo bvcx",
-      },
-    });
-
-    const mailOptions = {
-      from: "jerrytechs83@gmail.com",
-      to: userEmail,
-      subject: "Event Registration Successful",
-      html,
-    };
-
-    await transporter.sendMail(mailOptions);
+    await sendRegistrationEmail(userEmail, event);
+    // await transporter.sendMail(mailOptions);
     console.log(registration);
     logger.info(`Registered for event successfully by user ${userEmail} for the event ${eventId} `);
 

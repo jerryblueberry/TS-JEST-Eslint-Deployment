@@ -29,6 +29,17 @@ model User {
   role         String
   createdAt    DateTime       @default(now())
   Registration Registration[]
+  authToken    authToken[]
+  OTP          Int            @default(0)
+  status       String         @default("unverified")
+}
+
+model authToken {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
+  token          String
+  expirationDate DateTime
 }
 
 model Event {

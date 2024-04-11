@@ -14,9 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerEvent = void 0;
 const db_config_1 = __importDefault(require("../DB/db.config"));
-const mjml_1 = __importDefault(require("mjml"));
-const nodemailer_1 = __importDefault(require("nodemailer"));
 const logger_1 = require("../logger");
+const mailer_1 = require("../utils/mailer");
 const registerEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
@@ -57,41 +56,8 @@ const registerEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 },
             },
         });
-        // Send email with MJML template
-        const mjmlTemplate = `
-      <mjml>
-        <mj-body>
-          <mj-section>
-            <mj-column>
-              <mj-text>
-                <h1>Registration Successful</h1>
-                <p>Thank you for registering for the event "${event.title}".</p>
-                <p>Event Details:</p>
-                <p>Title: ${event.title}</p>
-                <p>Description: ${event.description}</p>
-                
-              </mj-text>
-            </mj-column>
-          </mj-section>
-        </mj-body>
-      </mjml>
-    `;
-        const { html } = (0, mjml_1.default)(mjmlTemplate);
-        // Send the email using Nodemailer
-        const transporter = nodemailer_1.default.createTransport({
-            service: "gmail",
-            auth: {
-                user: "jerrytechs83@gmail.com",
-                pass: "hcmj rbft sgdo bvcx",
-            },
-        });
-        const mailOptions = {
-            from: "jerrytechs83@gmail.com",
-            to: userEmail,
-            subject: "Event Registration Successful",
-            html,
-        };
-        yield transporter.sendMail(mailOptions);
+        yield (0, mailer_1.sendRegistrationEmail)(userEmail, event);
+        // await transporter.sendMail(mailOptions);
         console.log(registration);
         logger_1.logger.info(`Registered for event successfully by user ${userEmail} for the event ${eventId} `);
         return res.status(200).json({ message: "Registration successful" });

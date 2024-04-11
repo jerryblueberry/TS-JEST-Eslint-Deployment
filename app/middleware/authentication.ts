@@ -20,25 +20,37 @@ interface RequestWithUser extends Request {
 }
 
 export const verifyAuth = async (req: RequestWithUser, res: Response, next: NextFunction) => {
-  const token = req.cookies.jwt;
+  const accessToken = req.cookies.jwt;
+  const refreshToken = req.cookies.refreshToken;
 
-  if (!token) {
+  // Check if access token or refresh token is provided
+  if (!accessToken && !refreshToken) {
     return res.status(401).json({ error: "JWT must be provided" });
   }
 
+  let decoded: DecodedToken | null = null; // Initialize decoded to null
+
   try {
-    const decoded = jwt.verify(token, "MXIUuw6u5Ty0Ecih3XCjZ1+0575N2OTu0x9gsOl6pBc=") as DecodedToken;
+    // Verify access token
+    if (accessToken) {
+      decoded = jwt.verify(accessToken, "MXIUuw6u5Ty0Ecih3XCjZ1+0575N2OTu0x9gsOl6pBc=") as DecodedToken;
+    }
+    // Verify refresh token
+    else if (refreshToken) {
+      decoded = jwt.verify(refreshToken, "refreshToken123") as DecodedToken;
+    }
 
-    console.log("Decoded Token:", decoded); // Log decoded token object
-
+    // If token is invalid, return unauthorized error
     if (!decoded) {
       return res.status(401).json({ error: "Unauthorized - Invalid token" });
     }
 
+    // Find user based on userId from decoded token
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
     });
 
+    // If user not found, return error
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
